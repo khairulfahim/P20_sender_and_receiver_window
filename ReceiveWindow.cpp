@@ -5,8 +5,9 @@ ReceiveWindow::ReceiveWindow(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle("Receive Window");
 }
 
-void ReceiveWindow::receiveImage(const QImage &image) {
-    receivedImage = image;
+void ReceiveWindow::receiveImage(const QByteArray &imageData) {
+    QDataStream stream(imageData);
+    stream >> receivedImage; //deserialize data
     update();
 }
 
@@ -17,6 +18,7 @@ void ReceiveWindow::paintEvent(QPaintEvent *event) {
 }
 
 void ReceiveWindow::clearDrawing() {
+    receivedImage = QImage(receivedImage.size(), receivedImage.format());
     receivedImage.fill(Qt::white);
     update();
 }
