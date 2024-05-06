@@ -1,12 +1,13 @@
 #include "SendWindow.h"
 #include <QPainter>
 #include <QDebug>
+#include <QColorDialog>
 
 SendWindow::SendWindow(QWidget *parent) : QMainWindow(parent), drawing(false) {
     setWindowTitle("Send Window");
     image = QImage(size(), QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::white);
-    paintColor = Qt::black;
+    //paintColor = Qt::black;
 
     clearButton = new QPushButton("Clear", this);
     clearButton->move(10, 10);
@@ -18,6 +19,13 @@ void SendWindow::drawLine(const QPoint& startPos, const QPoint& endPos, const QC
     painter.setPen(QPen(color, 2));
     painter.drawLine(startPos, endPos);
     update();
+}
+
+void SendWindow::serializeImage(){
+    QByteArray imageData;
+    QDataStream stream(&imageData, QIODevice::WriteOnly);
+    stream << this->image;
+    emit imageSent(imageData);
 }
 
 void SendWindow::mousePressEvent(QMouseEvent *event) {
@@ -33,12 +41,8 @@ void SendWindow::mouseMoveEvent(QMouseEvent *event) {
         //draw the last position of the line as the mouse moving
         drawLine(lastPos, event->pos(), Qt::blue);
         lastPos = event->pos();
-        //data serialisation
-        QByteArray imageData;
-        QDataStream stream(&imageData, QIODevice::WriteOnly);
-        stream << image;
-        qDebug() << image;
-        emit imageSent(imageData);
+        //data serialization
+        serializeImage();
     }
 }
 
