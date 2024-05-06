@@ -18,6 +18,7 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void deserializeImage(const QByteArray &imageData);
 
 private:
     QImage receivedImage;
