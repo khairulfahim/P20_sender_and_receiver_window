@@ -12,27 +12,35 @@ SendWindow::SendWindow(QWidget *parent) : QMainWindow(parent), drawing(false) {
     connect(clearButton, &QPushButton::clicked, this, &SendWindow::clearDrawing);
 }
 
+void SendWindow::drawLine(const QPoint& startPos, const QPoint& endPos, const QColor& color) {
+    QPainter painter(&image);
+    painter.setPen(QPen(color, 2));
+    painter.drawLine(startPos, endPos);
+    update();
+}
+
 void SendWindow::mousePressEvent(QMouseEvent *event) {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton) { //left click to draw
         drawing = true;
         lastPos = event->pos();
+        startPos = lastPos; // Store the start position of the line
     }
 }
 
 void SendWindow::mouseMoveEvent(QMouseEvent *event) {
     if ((event->buttons() & Qt::LeftButton) && drawing) {
-        QPainter painter(&image);
-        painter.setPen(QPen(paintColor, 2));
-        painter.drawLine(lastPos, event->pos());
+        drawLine(lastPos, event->pos(), paintColor);
         lastPos = event->pos();
-        update();
     }
 }
 
 void SendWindow::mouseReleaseEvent(QMouseEvent *event) {
-    if (event->button() == Qt::LeftButton && drawing) {
+    if (event->button() == Qt::LeftButton && drawing) { //release left click to stop drawing
         drawing = false;
-        emit imageSent(image);
+        QByteArray imageData;
+        QDataStream stream(&imageData, QIODevice::WriteOnly);
+        stream << image; //serialise data
+        emit imageSent(imageData);
     }
 }
 
