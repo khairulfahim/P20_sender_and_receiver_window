@@ -16,6 +16,9 @@ int main(int argc, char *argv[]) {
     // Connect the clearSignal from SendWindow to the clearDrawing slot in ReceiveWindow
     QObject::connect(&sendWindow, &SendWindow::clearSignal, &receiveWindow, &ReceiveWindow::clearDrawing);
 
+    sendWindow.resize(800, 800);
+    receiveWindow.resize(800, 800);
+
     sendWindow.show();
     receiveWindow.show();
 
