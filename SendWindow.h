@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QPushButton>
 #include <QDataStream>
+#include <QColorDialog>
 
 class SendWindow : public QMainWindow {
     Q_OBJECT
@@ -26,6 +27,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
+    void serializeImage();
 
 private:
     bool drawing;
