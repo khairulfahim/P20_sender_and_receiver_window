@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QMouseEvent>
 #include <QPushButton>
+#include <QDataStream>
 
 class SendWindow : public QMainWindow {
     Q_OBJECT
@@ -13,8 +14,12 @@ public:
     SendWindow(QWidget *parent = nullptr);
 
 signals:
-    void imageSent(const QImage &image);
+    void imageSent(const QByteArray &imageData);
     void clearSignal(); // New signal for clearing the drawing
+
+public slots:
+    void clearDrawing();
+    void drawLine(const QPoint& startPos, const QPoint& endPos, const QColor& color);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -22,12 +27,10 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
-public slots:
-    void clearDrawing();
-
 private:
     bool drawing;
     QPoint lastPos;
+    QPoint startPos; // Store the start position of the line
     QImage image;
     QColor paintColor;
     QPushButton *clearButton;
