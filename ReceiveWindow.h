@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QImage>
+#include <QByteArray>
+#include <QDataStream>
 
 class ReceiveWindow : public QMainWindow {
     Q_OBJECT
@@ -11,8 +13,8 @@ public:
     ReceiveWindow(QWidget *parent = nullptr);
 
 public slots:
-    void receiveImage(const QImage &image);
-    void clearDrawing(); // New slot for clearing the drawing
+    void receiveImage(const QByteArray &imageData);
+    void clearDrawing();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
