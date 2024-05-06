@@ -1,5 +1,6 @@
 #include "SendWindow.h"
 #include <QPainter>
+#include <QDebug>
 
 SendWindow::SendWindow(QWidget *parent) : QMainWindow(parent), drawing(false) {
     setWindowTitle("Send Window");
@@ -23,24 +24,27 @@ void SendWindow::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) { //left click to draw
         drawing = true;
         lastPos = event->pos();
-        startPos = lastPos; // Store the start position of the line
+        startPos = lastPos; // Update the start position of the line
     }
 }
 
 void SendWindow::mouseMoveEvent(QMouseEvent *event) {
     if ((event->buttons() & Qt::LeftButton) && drawing) {
-        drawLine(lastPos, event->pos(), paintColor);
+        //draw the last position of the line as the mouse moving
+        drawLine(lastPos, event->pos(), Qt::blue);
         lastPos = event->pos();
+        //data serialisation
+        QByteArray imageData;
+        QDataStream stream(&imageData, QIODevice::WriteOnly);
+        stream << image;
+        qDebug() << image;
+        emit imageSent(imageData);
     }
 }
 
 void SendWindow::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton && drawing) { //release left click to stop drawing
         drawing = false;
-        QByteArray imageData;
-        QDataStream stream(&imageData, QIODevice::WriteOnly);
-        stream << image; //serialise data
-        emit imageSent(imageData);
     }
 }
 
